@@ -2,4 +2,4 @@
 *.tfstate
 *.tfstate.backup
 *.lock.hcl
-*terraform.code-workspace
+*.code-workspace
