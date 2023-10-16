@@ -273,3 +273,11 @@ resource "aws_lb_listener_rule" "asg" {
     target_group_arn = aws_lb_target_group.asg.arn
   }
 }
+
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-mgmt-joshprom2000369" # update to use tfvars to create name w/ string concatenation
+    key = "dev/services/frontend-services/webserver-cluster/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
