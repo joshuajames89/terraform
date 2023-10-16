@@ -20,7 +20,7 @@ resource "aws_db_instance" "dev_datastore" {
 
 terraform {
   backend "s3" {
-    bucket = "terraform-state-mgmt-joshprom2000369" # update to use tfvars to create name w/ string concatenation
+    bucket = "terraform-state-mgmt-joshprom2000369"
     key = "dev/data-storage/mysql/terraform.tfstate"
     region = "us-east-2"
   }
