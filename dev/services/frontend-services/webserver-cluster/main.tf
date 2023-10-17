@@ -6,6 +6,27 @@ provider "aws" {
   region = "us-east-2"
 }
 
+# Fetch remote datasource to reference state data in instance user_data
+data "terraform_remote_state" "mysql_db" {
+  backend = "s3"
+
+  config = {
+    bucket = "terraform-state-mgmt-joshprom2000369"
+    key = "dev/data-storage/mysql/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
+
+data "template_file" "user_data" {
+  template = file("user-data.sh")
+
+  vars = {
+    server_port = var.server_port
+    db_address = data.terraform_remote_state.mysql_db.outputs.address
+    db_port = data.terraform_remote_state.mysql_db.outputs.port
+  }
+}
+
 #Define 'main' VPC to avoid use of default
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
@@ -148,13 +169,7 @@ resource "aws_launch_configuration" "example" {
     image_id = "ami-024e6efaf93d85776"
     instance_type = "t2.micro"
     security_groups = [aws_security_group.alb.id]
-
-# Simple bash to insert and populate response index page for validation
-user_data = <<-EOF
-    #!/bin/bash
-    echo "Hello, World" > index.html
-    nohup busybox httpd -f -p ${var.server_port} &
-    EOF
+    user_data = data.template_file.user_data.rendered
 
 # Ensure new autoscale group has replacement resource and updated references PRIOR to destroying previous launch config.
 # https://www.terraform.io/docs/providers/aws/r/launch_configuration.html
