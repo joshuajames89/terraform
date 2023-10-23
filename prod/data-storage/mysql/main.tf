@@ -4,5 +4,5 @@ provider "aws" {
 
 module "db_instance" {
   source = "../../../modules/data-storage/mysql"
-  db_identifier_prefix = "mysql-dev"
+  db_identifier_prefix = "mysql-prod"
 }
