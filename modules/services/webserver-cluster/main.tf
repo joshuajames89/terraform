@@ -23,7 +23,7 @@ data "terraform_remote_state" "mysql_db" {
 }
 
 data "template_file" "user_data" {
-  template = file("user-data.sh")
+  template = file("${path.module}/user-data.sh")
 
   vars = {
     server_port = var.server_port
@@ -110,7 +110,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block     = ["0.0.0.0/0"]
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
   }
 
