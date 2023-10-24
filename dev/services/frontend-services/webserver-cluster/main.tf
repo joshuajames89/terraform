@@ -22,3 +22,11 @@ resource "aws_security_group_rule" "allow-dev-ingress" {
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
+
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-mgmt-joshprom2000369" # update to use tfvars to create name w/ string concatenation
+    key = "dev/services/frontend-services/webserver-cluster/terraform.tfstate"
+    region = "us-east-2"
+  }
+}
